@@ -10,6 +10,7 @@ import 'package:filex/screens/whatsapp_status.dart';
 import 'package:filex/utils/utils.dart';
 import 'package:filex/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,14 @@ class Browse extends StatelessWidget {
               );
             },
             icon: Icon(Feather.search),
-          )
+          ),
+          IconButton(
+              onPressed: () {
+                SystemChannels.platform
+                    .invokeMethod<void>('SystemNavigator.pop');
+              },
+              icon: Icon(Icons.exit_to_app),
+              tooltip: 'Exit')
         ],
       ),
       body: RefreshIndicator(
@@ -53,9 +61,9 @@ class Browse extends StatelessWidget {
             _SectionTitle('Categories'),
             _CategoriesSection(),
             CustomDivider(),
-            SizedBox(height: 20.0),
-            _SectionTitle('Recent Files'),
-            _RecentFiles(),
+            // SizedBox(height: 20.0),
+            // _SectionTitle('Recent Files'),
+            // _RecentFiles(),
           ],
         ),
       ),
@@ -156,10 +164,10 @@ class _CategoriesSection extends StatelessWidget {
                 Dialogs.showToast(
                     'Please Install WhatsApp to use this feature');
               }
-            } else if (index == 0) {
+            } else if (index == 5) {
               Navigate.pushPage(
                   context, Downloads(title: '${category['title']}'));
-            } else if (index == 5) {
+            } else if (index == 0) {
               Navigate.pushPage(context, AppScreen());
             } else {
               Navigate.pushPage(

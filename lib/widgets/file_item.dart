@@ -28,7 +28,7 @@ class FileItem extends StatelessWidget {
         style: TextStyle(fontSize: 14),
         maxLines: 2,
       ),
-      subtitle: Text(
+      subtitle: file.path.contains('.inf')? null: Text(
         '${FileUtils.formatBytes(File(file.path).lengthSync(), 2)},'
         ' ${FileUtils.formatTime(File(file.path).lastModifiedSync().toIso8601String())}',
       ),

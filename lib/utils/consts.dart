@@ -12,12 +12,7 @@ class Constants {
   }
 
   static List categories = [
-    {
-      'title': 'Downloads',
-      'icon': Feather.download,
-      'path': '',
-      'color': Colors.purple
-    },
+    {'title': 'Apps', 'icon': Icons.android, 'path': '', 'color': Colors.green},
     {
       'title': 'Images',
       'icon': Feather.image,
@@ -37,7 +32,12 @@ class Constants {
       'path': '',
       'color': Colors.pink
     },
-    {'title': 'Apps', 'icon': Icons.android, 'path': '', 'color': Colors.green},
+    {
+      'title': 'Downloads',
+      'icon': Feather.download,
+      'path': '',
+      'color': Colors.purple
+    },
     {
       'title': 'Whatsapp Statuses',
       'icon': FontAwesome.whatsapp,

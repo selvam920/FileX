@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:filex/providers/providers.dart';
 import 'package:filex/utils/utils.dart';
-import 'package:filex/widgets/file_item.dart';
 import 'package:filex/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -24,7 +23,7 @@ class _CategoryState extends State<Category> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       switch (widget.title.toLowerCase()) {
         case 'audio':
           Provider.of<CategoryProvider>(context, listen: false)
@@ -40,7 +39,8 @@ class _CategoryState extends State<Category> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (BuildContext context, CategoryProvider provider, Widget? child) {
+      builder:
+          (BuildContext context, CategoryProvider provider, Widget? child) {
         return provider.loading
             ? Scaffold(body: CustomLoader())
             : DefaultTabController(

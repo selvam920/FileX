@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:filex/screens/main_screen/main_screen.dart';
 import 'package:filex/utils/utils.dart';
@@ -15,28 +16,37 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   startTimeout() {
-    return Timer(Duration(seconds: 2), handleTimeout);
+    return Timer(Duration(seconds: 2), () => checkPermission());
   }
 
-  void handleTimeout() {
-    changeScreen();
-  }
+  checkPermission() async {
+    bool hasAccess = false;
+    if (Platform.isAndroid) {
+      if (await Permission.storage.isPermanentlyDenied) openAppSettings();
+      hasAccess = await Permission.storage.isGranted;
+      if (!hasAccess) hasAccess = await Permission.storage.request().isGranted;
 
-  changeScreen() async {
-    PermissionStatus status = await Permission.storage.status;
-    if (!status.isGranted) {
-      requestPermission();
-    } else {
-      Navigate.pushPageReplacement(context, MainScreen());
-    }
-  }
+      if (await Permission.accessMediaLocation.isPermanentlyDenied)
+        openAppSettings();
+      hasAccess = await Permission.accessMediaLocation.isGranted;
+      if (!hasAccess)
+        hasAccess = await Permission.accessMediaLocation.request().isGranted;
 
-  requestPermission() async {
-    PermissionStatus status = await Permission.storage.request();
-    if (status.isGranted) {
-      Navigate.pushPageReplacement(context, MainScreen());
-    } else {
-      Dialogs.showToast('Please Grant Storage Permissions');
+      if (!await Permission.manageExternalStorage.isRestricted) {
+        if (await Permission.manageExternalStorage.isPermanentlyDenied)
+          openAppSettings();
+        hasAccess = await Permission.manageExternalStorage.isGranted;
+        if (!hasAccess) {
+          hasAccess =
+              await Permission.manageExternalStorage.request().isGranted;
+        }
+      }
+
+      if (hasAccess) {
+        Navigate.pushPageReplacement(context, MainScreen());
+      } else {
+        Dialogs.showToast('Please Grant Storage Permissions');
+      }
     }
   }
 
@@ -51,9 +61,9 @@ class _SplashState extends State<Splash> {
         statusBarColor: Theme.of(context).primaryColor,
         systemNavigationBarColor: Colors.black,
         statusBarIconBrightness:
-        Theme.of(context).primaryColor == ThemeConfig.darkTheme.primaryColor
-            ? Brightness.light
-            : Brightness.dark,
+            Theme.of(context).primaryColor == ThemeConfig.darkTheme.primaryColor
+                ? Brightness.light
+                : Brightness.dark,
       ));
     });
   }

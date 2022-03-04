@@ -22,8 +22,9 @@ dependencies:
   cupertino_icons: ^1.0.3
   provider: ^5.0.0
   shared_preferences: ^2.0.4
-  flutter_icons:
-    git: git@github.com:jibiel/flutter-icons.git
+  flutter_icons: 
+    git:
+      url: https://github.com/jibiel/flutter-icons
   percent_indicator: ^3.0.1
   mime_type: ^1.0.0
   device_info: ^2.0.2
@@ -43,6 +44,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  platform: ^3.1.0
 
 
 # For information on the generic Dart part of this file, see the

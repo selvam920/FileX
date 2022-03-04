@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:filex/providers/providers.dart';
 import 'package:filex/utils/utils.dart';
-import 'package:filex/widgets/file_icon.dart';
 import 'package:filex/widgets/widgets.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mime_type/mime_type.dart';
@@ -27,7 +25,7 @@ class _ImagesState extends State<Images> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       if (widget.title.toLowerCase() == 'images') {
         Provider.of<CategoryProvider>(context, listen: false)
             .getImages('image');
@@ -41,7 +39,8 @@ class _ImagesState extends State<Images> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (BuildContext context, CategoryProvider provider, Widget? child) {
+      builder:
+          (BuildContext context, CategoryProvider provider, Widget? child) {
         if (provider.loading) {
           return Scaffold(body: CustomLoader());
         }
@@ -53,7 +52,8 @@ class _ImagesState extends State<Images> {
               bottom: TabBar(
                 indicatorColor: Theme.of(context).accentColor,
                 labelColor: Theme.of(context).accentColor,
-                unselectedLabelColor: Theme.of(context).textTheme.caption!.color,
+                unselectedLabelColor:
+                    Theme.of(context).textTheme.caption!.color,
                 isScrollable: provider.imageTabs.length < 3 ? false : true,
                 tabs: Constants.map<Widget>(
                   provider.imageTabs,

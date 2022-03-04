@@ -9,6 +9,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:provider/provider.dart';
 
+import '../../utils/gridviewfixedheight.dart';
+
 class Folder extends StatefulWidget {
   final String title;
   final String path;
@@ -72,13 +74,13 @@ class _FolderState extends State<Folder> with WidgetsBindingObserver {
     path = widget.path;
     getFiles();
     paths.add(widget.path);
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   navigateBack() {
@@ -90,6 +92,10 @@ class _FolderState extends State<Folder> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    int widthCard = 300;
+    int countRow = width ~/ widthCard;
+
     return WillPopScope(
       onWillPop: () async {
         if (paths.length == 1) {
@@ -158,50 +164,51 @@ class _FolderState extends State<Folder> with WidgetsBindingObserver {
           ],
         ),
         body: Visibility(
-          replacement: Center(child: Text('There\'s nothing here')),
-          visible: files.isNotEmpty,
-          child: ListView.separated(
-            padding: EdgeInsets.only(left: 20),
-            itemCount: files.length,
-            itemBuilder: (BuildContext context, int index) {
-              FileSystemEntity file = files[index];
-              if (file.toString().split(':')[0] == 'Directory') {
-                return DirectoryItem(
-                  popTap: (v) async {
-                    if (v == 0) {
-                      renameDialog(context, file.path, 'dir');
-                    } else if (v == 1) {
-                      deleteFile(true, file);
-                    }
-                  },
-                  file: file,
-                  tap: () {
-                    paths.add(file.path);
-                    path = file.path;
-                    setState(() {});
-                    getFiles();
-                  },
-                );
-              }
-              return FileItem(
-                file: file,
-                popTap: (v) async {
-                  if (v == 0) {
-                    renameDialog(context, file.path, 'file');
-                  } else if (v == 1) {
-                    deleteFile(false, file);
-                  } else if (v == 2) {
-                    /// TODO: Implement Share file feature
-                    print('Share');
+            replacement: Center(child: Text('There\'s nothing here')),
+            visible: files.isNotEmpty,
+            child: GridView.builder(
+                gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
+                        crossAxisSpacing: 20,
+                        crossAxisCount: (MediaQuery.of(context).orientation ==
+                                Orientation.portrait)
+                            ? 1
+                            : countRow,
+                        height: 70),
+                itemCount: files.length,
+                itemBuilder: (ctx, int index) {
+                  FileSystemEntity file = files[index];
+                  if (file.toString().split(':')[0] == 'Directory') {
+                    return DirectoryItem(
+                      popTap: (v) async {
+                        if (v == 0) {
+                          renameDialog(context, file.path, 'dir');
+                        } else if (v == 1) {
+                          deleteFile(true, file);
+                        }
+                      },
+                      file: file,
+                      tap: () {
+                        paths.add(file.path);
+                        path = file.path;
+                        setState(() {});
+                        getFiles();
+                      },
+                    );
                   }
-                },
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return CustomDivider();
-            },
-          ),
-        ),
+                  return FileItem(
+                    file: file,
+                    popTap: (v) async {
+                      if (v == 0) {
+                        renameDialog(context, file.path, 'file');
+                      } else if (v == 1) {
+                        deleteFile(false, file);
+                      } else if (v == 2) {
+                        print('Share');
+                      }
+                    },
+                  );
+                })),
         floatingActionButton: FloatingActionButton(
           onPressed: () => addDialog(context, path),
           child: Icon(Feather.plus),
